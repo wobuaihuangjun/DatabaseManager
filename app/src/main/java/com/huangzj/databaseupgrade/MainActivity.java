@@ -6,8 +6,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.huangzj.databaseupgrade.dao.bean.City;
+import com.huangzj.databaseupgrade.dao.bean.CityDao;
+import com.huangzj.databaseupgrade.util.UUIDUtil;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,38 +20,56 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                initData();
+                initView();
             }
         });
+
+        cityDao = new CityDao(this);
+        initView();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    CityDao cityDao;
+
+    private void initView() {
+        TextView textView = (TextView) findViewById(R.id.text_city);
+        textView.setText(getData());
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private String getData() {
+        List<City> list = cityDao.queryForAll();
+        StringBuilder sb = new StringBuilder("查询结果：\n");
+        if (list == null || list.size() <= 0) {
+            sb.append("空");
+            return sb.toString();
         }
-
-        return super.onOptionsItemSelected(item);
+        sb.append("查询到的总条数").append(list.size()).append("\n\n");
+        sb.append("第一条记录为：\n");
+        sb.append(list.get(0).toString()).append("\n\n");
+        sb.append("最后一条记录为：\n");
+        sb.append(list.get(list.size() - 1).toString()).append("\n\n");
+        return sb.toString();
     }
+
+
+    private void initData() {
+        String cityUuid = UUIDUtil.getUUID();
+        City city = new City();
+        city.setProvinceName("广东省");
+        city.setCityName("东莞市");
+        city.setCityNo(cityUuid);
+
+        cityDao.insert(city);
+    }
+
 }

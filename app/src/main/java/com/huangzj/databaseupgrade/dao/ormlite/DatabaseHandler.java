@@ -17,12 +17,12 @@ import java.util.List;
  * <p/>
  * Created by huangzj on 2016/1/25.
  */
-public class DatabaseDeal<T> {
+public class DatabaseHandler<T> {
 
     private Class<T> clazz;
     private String tableName;
 
-    public DatabaseDeal(Class<T> clazz) {
+    public DatabaseHandler(Class<T> clazz) {
         this.clazz = clazz;
         tableName = DatabaseUtil.extractTableName(clazz);
     }

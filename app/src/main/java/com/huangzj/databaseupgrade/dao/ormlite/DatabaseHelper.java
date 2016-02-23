@@ -3,8 +3,8 @@ package com.huangzj.databaseupgrade.dao.ormlite;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.huangzj.databaseupgrade.dao.bean.City;
 import com.huangzj.databaseupgrade.util.LogUtil;
-import com.huangzj.databaseupgrade.dao.bean.TestBean;
 import com.j256.ormlite.android.AndroidDatabaseConnection;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
@@ -31,11 +31,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     /**
      * 数据库版本号
      */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     private static DatabaseHelper instance;
 
-    private static ArrayList<DatabaseDeal> TableHandlers;
+    private static ArrayList<DatabaseHandler> TableHandlers;
 
     /**
      * dao缓存
@@ -55,7 +55,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
                     // 注册所有用于处理升级等表操作的Handler
                     TableHandlers = new ArrayList<>();
-                    TableHandlers.add(new DatabaseDeal<>(TestBean.class));
+
+                    TableHandlers.add(new DatabaseHandler<>(City.class));
                 }
             }
         }
@@ -68,7 +69,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void upgrade(SQLiteDatabase db, ConnectionSource cs, int oldVersion, int newVersion) {
         LogUtil.i("数据库升级了" + " oldVersion = " +oldVersion+ " newVersion = "+newVersion);
         try {
-            for (DatabaseDeal handler : TableHandlers) {
+            for (DatabaseHandler handler : TableHandlers) {
                 handler.onUpgrade(db, cs, oldVersion, newVersion);
             }
         } catch (SQLException e) {
@@ -82,7 +83,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void downgrade(ConnectionSource cs, int oldVersion, int newVersion) {
         LogUtil.i("数据库降级了" + " oldVersion = " +oldVersion+ " newVersion = "+newVersion);
         try {
-            for (DatabaseDeal handler : TableHandlers) {
+            for (DatabaseHandler handler : TableHandlers) {
                 handler.onDowngrade(cs, oldVersion, newVersion);
             }
         } catch (SQLException e) {
@@ -95,7 +96,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      */
     public void clearAllData() {
         try {
-            for (DatabaseDeal handler : TableHandlers) {
+            for (DatabaseHandler handler : TableHandlers) {
                 handler.clear(connectionSource);
             }
         } catch (SQLException e) {
@@ -105,7 +106,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     public void createTables(ConnectionSource connectionSource) {
         try {
-            for (DatabaseDeal handler : TableHandlers) {
+            for (DatabaseHandler handler : TableHandlers) {
                 handler.create(connectionSource);
             }
         } catch (SQLException e) {
