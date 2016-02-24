@@ -33,7 +33,7 @@ public class OrmLiteDao<T> {
     protected final DatabaseHelper helper;
 
     public OrmLiteDao(Context context, Class<T> cls) {
-        helper = new DatabaseHelper(context);
+        helper = DatabaseHelper.getInstance(context);
         ormLiteDao = helper.getDao(cls);
     }
 

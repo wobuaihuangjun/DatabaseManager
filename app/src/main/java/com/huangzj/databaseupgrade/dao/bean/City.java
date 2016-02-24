@@ -23,6 +23,9 @@ public class City {
     @DatabaseField
     private String provinceName;
 
+    @DatabaseField
+    private String addColumn1;
+
     public Integer getId() {
         return id;
     }
@@ -62,6 +65,7 @@ public class City {
                 ", cityNo='" + cityNo + '\'' +
                 ", cityName='" + cityName + '\'' +
                 ", provinceName='" + provinceName + '\'' +
+                ", addColumn1='" + addColumn1 + '\'' +
                 '}';
     }
 }
