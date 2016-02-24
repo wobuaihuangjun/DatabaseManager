@@ -253,7 +253,7 @@ public class LogUtil {
     }
 
     private static void saveLogToFile(LEVEL level, String... msg) {
-        saveLogToFile(level, saveUrl, DateFormatUtil.format(DateFormatUtil.FORMAT_2) + ".txt", false, msg);
+//        saveLogToFile(level, saveUrl, DateFormatUtil.format(DateFormatUtil.FORMAT_2) + ".txt", false, msg);
     }
 
     /**

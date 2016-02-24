@@ -6,6 +6,7 @@ import com.huangzj.databaseupgrade.util.CollectionUtil;
 import com.huangzj.databaseupgrade.util.LogUtil;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,10 @@ public class DatabaseHandler<T> {
     public DatabaseHandler(Class<T> clazz) {
         this.clazz = clazz;
         tableName = DatabaseUtil.extractTableName(clazz);
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 
     public void onUpgrade(SQLiteDatabase db, ConnectionSource cs) throws SQLException {

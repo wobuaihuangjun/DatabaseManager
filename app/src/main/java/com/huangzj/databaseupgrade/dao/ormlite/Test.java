@@ -1,9 +1,12 @@
 package com.huangzj.databaseupgrade.dao.ormlite;
 
 
+import com.huangzj.databaseupgrade.dao.bean.City;
 import com.huangzj.databaseupgrade.dao.ormlite.ColumnStruct;
 import com.huangzj.databaseupgrade.dao.ormlite.DatabaseUtil;
+import com.huangzj.databaseupgrade.util.CollectionUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,8 +17,42 @@ public class Test {
     public static void main(String[] args) {
 
 //        test1();
-        test2();
+//        test2();
 //        test3();
+        test4();
+    }
+
+    private static void test4() {
+        registerTable(City.class);
+        registerTable(City.class);
+    }
+
+    static List<DatabaseHandler> tableHandlers;
+
+    public static <T> void registerTable(Class<T> clazz) {
+        if (tableHandlers == null) {
+            tableHandlers = new ArrayList<>();
+        }
+        DatabaseHandler handler = new DatabaseHandler<>(clazz);
+        if (isValid(handler, tableHandlers)) {
+            tableHandlers.add(handler);
+            System.out.println("注册成功");
+        } else {
+            System.out.println("已经注册过了");
+        }
+    }
+
+    public static boolean isValid(DatabaseHandler handler, List<DatabaseHandler> list) {
+        if (list == null || handler == null) {
+            return false;
+        }
+        String tableName = handler.getTableName();
+        for (DatabaseHandler element : list) {
+            if (tableName.equals(element.getTableName())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static void test3() {
