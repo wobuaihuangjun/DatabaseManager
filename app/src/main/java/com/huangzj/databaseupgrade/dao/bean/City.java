@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 /**
  * 市信息数据表
  * <p/>
- * Created by lhd on 2015/10/9.
+ * Created by huangzj on 2016/1/23.
  */
 @DatabaseTable(tableName = "city")
 public class City {
@@ -65,14 +65,6 @@ public class City {
         this.cityName = cityName;
     }
 
-    public String getProvinceName() {
-        return provinceName;
-    }
-
-    public void setProvinceName(String provinceName) {
-        this.provinceName = provinceName;
-    }
-
     public Integer getIndex() {
         return index;
     }
@@ -81,11 +73,11 @@ public class City {
         this.index = index;
     }
 
-    public String getTest() {
-        return test;
+    public String getProvinceName() {
+        return provinceName;
     }
 
-    public void setTest(String test) {
-        this.test = test;
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName;
     }
 }

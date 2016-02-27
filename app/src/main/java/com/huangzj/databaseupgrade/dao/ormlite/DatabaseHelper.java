@@ -45,7 +45,6 @@ public class DatabaseHelper extends OrmLiteDatabaseHelper {
      */
     private void addTable() {
         registerTable(City.class);
-        registerTable(Contact.class);
     }
 
 }

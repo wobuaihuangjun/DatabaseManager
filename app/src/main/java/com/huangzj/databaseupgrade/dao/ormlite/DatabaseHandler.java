@@ -70,7 +70,7 @@ public class DatabaseHandler<T> {
                 // 判断列的变化情况：增加、减少、增减
                 List<String> deleteList = DatabaseUtil.getDeleteColumns(oldColumns, newColumns);
                 // 自增的列不纳入数据拷贝的范围
-                deleteList = DatabaseUtil.addGeneratedId(deleteList, oldStruct);
+//                deleteList = DatabaseUtil.addGeneratedId(deleteList, oldStruct);
                 upgradeByCopy(db, cs, getCopyColumns(oldColumns, deleteList));
             } else {
                 LogUtil.i("表没有发生变化,不需要更新数据表");
@@ -155,9 +155,9 @@ public class DatabaseHandler<T> {
         for (String columnName : oldColumns) {
             if (!CollectionUtil.existValue(columnName, deleteList)) {
                 if (index == 0) {
-                    columns.append(columnName);
+                    columns.append("`").append(columnName).append("`");
                 } else {
-                    columns.append(", ").append(columnName);
+                    columns.append(", ").append("`").append(columnName).append("`");
                 }
                 index++;
             }
