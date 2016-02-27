@@ -20,11 +20,26 @@ public class City {
     @DatabaseField
     private String cityName;
 
+    @DatabaseField(defaultValue = "-1")
+    private Integer index;
+
+    @DatabaseField
+    private String test;
+
     @DatabaseField
     private String provinceName;
 
-    @DatabaseField
-    private String addColumn1;
+    @Override
+    public String toString() {
+        return "City{" +
+                "id=" + id +
+                ", cityNo='" + cityNo + '\'' +
+                ", cityName='" + cityName + '\'' +
+                ", index=" + index +
+                ", test='" + test + '\'' +
+                ", provinceName='" + provinceName + '\'' +
+                '}';
+    }
 
     public Integer getId() {
         return id;
@@ -58,14 +73,19 @@ public class City {
         this.provinceName = provinceName;
     }
 
-    @Override
-    public String toString() {
-        return "City{" +
-                "id=" + id +
-                ", cityNo='" + cityNo + '\'' +
-                ", cityName='" + cityName + '\'' +
-                ", provinceName='" + provinceName + '\'' +
-                ", addColumn1='" + addColumn1 + '\'' +
-                '}';
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
+
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
     }
 }

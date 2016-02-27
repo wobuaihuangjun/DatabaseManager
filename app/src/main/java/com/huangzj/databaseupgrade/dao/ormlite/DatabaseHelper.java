@@ -19,7 +19,7 @@ public class DatabaseHelper extends OrmLiteDatabaseHelper {
     /**
      * 数据库版本号
      */
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private static DatabaseHelper instance;
 
@@ -45,6 +45,7 @@ public class DatabaseHelper extends OrmLiteDatabaseHelper {
      */
     private void addTable() {
         registerTable(City.class);
+        registerTable(Contact.class);
     }
 
 }

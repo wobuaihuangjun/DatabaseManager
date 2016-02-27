@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import com.huangzj.databaseupgrade.dao.ormlite.ColumnStruct;
+import com.huangzj.databaseupgrade.util.CollectionUtil;
 import com.huangzj.databaseupgrade.util.LogUtil;
 import com.j256.ormlite.misc.JavaxPersistence;
 import com.j256.ormlite.support.ConnectionSource;
@@ -254,6 +255,29 @@ public class DatabaseUtil {
             }
         }
         return false;
+    }
+
+    /**
+     *添加自增的列到集合
+     * @param columns
+     * @param oldStruct
+     * @return
+     */
+    public static List<String> addGeneratedId(List<String> columns, List<ColumnStruct> oldStruct) {
+        if (columns == null || oldStruct == null) {
+            return null;
+        }
+
+        for (ColumnStruct struct : oldStruct) {
+            // 自增的列不纳入数据拷贝的范围
+            if (struct != null && struct.getColumnLimit().contains("INTEGER PRIMARY KEY AUTOINCREMENT")) {
+                String columnName = struct.getColumnName();
+                if (!CollectionUtil.existValue(columnName, columns)) {
+                    columns.add(columnName);
+                }
+            }
+        }
+        return columns;
     }
 
     /**

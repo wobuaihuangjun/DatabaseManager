@@ -2,7 +2,6 @@ package com.huangzj.databaseupgrade;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -34,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
                 initView();
             }
         });
-
         cityDao = new CityDao(this);
         initView();
     }
@@ -60,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         sb.append(list.get(list.size() - 1).toString()).append("\n\n");
         return sb.toString();
     }
-
 
     private void initData() {
         String cityUuid = UUIDUtil.getUUID();

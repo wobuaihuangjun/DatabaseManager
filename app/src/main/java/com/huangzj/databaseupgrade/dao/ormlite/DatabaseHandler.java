@@ -69,13 +69,9 @@ public class DatabaseHandler<T> {
                 LogUtil.d("表发生了变化");
                 // 判断列的变化情况：增加、减少、增减
                 List<String> deleteList = DatabaseUtil.getDeleteColumns(oldColumns, newColumns);
-//                List<String> addList = DatabaseUtil.getAddColumns(oldColumns, newColumns);
+                // 自增的列不纳入数据拷贝的范围
+                deleteList = DatabaseUtil.addGeneratedId(deleteList, oldStruct);
                 upgradeByCopy(db, cs, getCopyColumns(oldColumns, deleteList));
-//                if (deleteList == null || deleteList.isEmpty()) {
-//                    upgradeByAdd(db, addList, newStruct);
-//                } else {
-//                    upgradeByCopy(db, cs, getCopyColumns(oldColumns, deleteList));
-//                }
             } else {
                 LogUtil.i("表没有发生变化,不需要更新数据表");
             }
