@@ -48,12 +48,13 @@ public class MainActivity extends AppCompatActivity {
         cityDao.queryForAllSync(new DbCallBack() {
             @Override
             public void onSuccess(Object data) {
-                Timber.d("收到数据变更通知");
+                Timber.d("---------sync query success");
                 updateView((List<City>) data);
             }
 
             @Override
             public void onError(Throwable throwable) {
+                Timber.d("---------sync query fail");
 
             }
         });
