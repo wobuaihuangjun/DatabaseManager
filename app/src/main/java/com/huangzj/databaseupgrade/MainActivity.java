@@ -7,11 +7,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.huangzj.databaseupgrade.dao.DbCallBack;
 import com.huangzj.databaseupgrade.dao.bean.City;
 import com.huangzj.databaseupgrade.dao.bean.CityDao;
 import com.huangzj.databaseupgrade.util.UUIDUtil;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,36 +30,50 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 initData();
-                initView();
+                getData();
             }
         });
         cityDao = new CityDao(this);
-        initView();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     CityDao cityDao;
 
-    private void initView() {
-        TextView textView = (TextView) findViewById(R.id.text_city);
-        textView.setText(getData());
+    private void getData() {
+        cityDao.queryForAllSync(new DbCallBack() {
+            @Override
+            public void onSuccess(Object data) {
+                Timber.d("收到数据变更通知");
+                updateView((List<City>) data);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+        });
     }
 
-    private String getData() {
-        List<City> list = cityDao.queryForAll();
+    private void updateView(List<City> list) {
+        TextView textView = (TextView) findViewById(R.id.text_city);
+
         StringBuilder sb = new StringBuilder("查询结果：\n");
         if (list == null || list.size() <= 0) {
             sb.append("空");
-            return sb.toString();
+        } else {
+            sb.append("查询到的总条数").append(list.size()).append("\n\n");
+            sb.append("第一条记录为：\n");
+            sb.append(list.get(0).toString()).append("\n\n");
+            sb.append("最后一条记录为：\n");
+            sb.append(list.get(list.size() - 1).toString()).append("\n\n");
         }
-        sb.append("查询到的总条数").append(list.size()).append("\n\n");
-        sb.append("第一条记录为：\n");
-        sb.append(list.get(0).toString()).append("\n\n");
-        sb.append("最后一条记录为：\n");
-        sb.append(list.get(list.size() - 1).toString()).append("\n\n");
-        return sb.toString();
+
+        textView.setText(sb.toString());
     }
 
     private void initData() {
@@ -66,7 +83,17 @@ public class MainActivity extends AppCompatActivity {
         city.setCityName("东莞市");
         city.setCityNo(cityUuid);
 
-        cityDao.insert(city);
+        cityDao.insertSync(city, new DbCallBack() {
+            @Override
+            public void onSuccess(Object data) {
+                Timber.d("---------sync insert success");
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                Timber.e("---------sync insert fail", throwable);
+            }
+        });
     }
 
 }

@@ -3,13 +3,14 @@ package com.huangzj.databaseupgrade.dao.ormlite;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.huangzj.databaseupgrade.util.CollectionUtil;
-import com.huangzj.databaseupgrade.util.LogUtil;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * 数据库表升级方案的基类
@@ -37,14 +38,14 @@ public class DatabaseHandler<T> {
         List<ColumnStruct> newStruct = DatabaseUtil.getNewTableStruct(cs, clazz);
 
         if (oldStruct.isEmpty() && newStruct.isEmpty()) {
-            LogUtil.d("数据表结构都为空！不是合法的数据库bean！！！");
+            Timber.d("数据表结构都为空！不是合法的数据库bean！！！");
             return;
         } else if (oldStruct.isEmpty()) {
-            LogUtil.d("新增表");
+            Timber.d("新增表");
             create(cs);
         } else if (newStruct.isEmpty()) {
             // 永远不会执行
-            LogUtil.d("删除表");
+            Timber.d("删除表");
             drop(cs);
         } else {
             dealColumnChange(db, cs, oldStruct, newStruct);
@@ -57,7 +58,7 @@ public class DatabaseHandler<T> {
     private void dealColumnChange(SQLiteDatabase db, ConnectionSource cs, List<ColumnStruct> oldStruct,
                                   List<ColumnStruct> newStruct) throws SQLException {
         if (DatabaseUtil.hasChangeColumnLimit(oldStruct, newStruct)) {
-            LogUtil.d("数据表已有字段的描述改变");
+            Timber.d("数据表已有字段的描述改变");
             // 已有字段描述改变了，删除旧表，重建新表
             reset(cs);
         } else {
@@ -66,14 +67,14 @@ public class DatabaseHandler<T> {
             List<String> oldColumns = DatabaseUtil.getColumnNames(oldStruct);
             List<String> newColumns = DatabaseUtil.getColumnNames(newStruct);
             if (!oldColumns.equals(newColumns)) {
-                LogUtil.d("表发生了变化");
+                Timber.d("表发生了变化");
                 // 判断列的变化情况：增加、减少、增减
                 List<String> deleteList = DatabaseUtil.getDeleteColumns(oldColumns, newColumns);
                 // 自增的列不纳入数据拷贝的范围
 //                deleteList = DatabaseUtil.addGeneratedId(deleteList, oldStruct);
                 upgradeByCopy(db, cs, getCopyColumns(oldColumns, deleteList));
             } else {
-                LogUtil.i("表没有发生变化,不需要更新数据表");
+                Timber.i("表没有发生变化,不需要更新数据表");
             }
         }
     }
@@ -123,7 +124,7 @@ public class DatabaseHandler<T> {
                 sql = TableUtils.getCreateTableStatements(cs, clazz).get(0);
                 db.execSQL(sql);
             } catch (Exception e) {
-                LogUtil.e(e);
+                Timber.e("", e);
                 TableUtils.createTable(cs, clazz);
             }
             sql = "INSERT INTO " + tableName + " (" + columns + ") " +
@@ -136,7 +137,7 @@ public class DatabaseHandler<T> {
 
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            LogUtil.e(e);
+            Timber.e("", e);
         } finally {
             db.endTransaction();
         }

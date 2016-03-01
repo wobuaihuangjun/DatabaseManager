@@ -4,9 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
-import com.huangzj.databaseupgrade.dao.ormlite.ColumnStruct;
 import com.huangzj.databaseupgrade.util.CollectionUtil;
-import com.huangzj.databaseupgrade.util.LogUtil;
 import com.j256.ormlite.misc.JavaxPersistence;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTable;
@@ -15,6 +13,8 @@ import com.j256.ormlite.table.TableUtils;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * Created by huangzj on 2016/1/23.
@@ -74,10 +74,11 @@ public class DatabaseUtil {
         List<ColumnStruct> columnStruct = new ArrayList<>();
         try {
             String struct = TableUtils.getCreateTableStatements(connectionSource, clazz).get(0);
-            LogUtil.i("新的建表语句：" + struct);
+            Timber.i("新的建表语句：" + struct);
             columnStruct = getColumnStruct(struct);
         } catch (SQLException e) {
-            LogUtil.e(e);
+            Timber.e("", e);
+            ;
         }
         return columnStruct;
     }
@@ -101,12 +102,13 @@ public class DatabaseUtil {
                 int columnIndex = cursor.getColumnIndex("sql");
                 if (-1 != columnIndex && cursor.getCount() > 0) {
                     String struct = cursor.getString(columnIndex);
-                    LogUtil.i("旧的建表语句：" + struct);
+                    Timber.i("旧的建表语句：" + struct);
                     columnStruct = getColumnStruct(struct);
                 }
             }
         } catch (Exception e) {
-            LogUtil.e(e);
+            Timber.e("", e);
+            ;
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -258,7 +260,8 @@ public class DatabaseUtil {
     }
 
     /**
-     *添加自增的列到集合
+     * 添加自增的列到集合
+     *
      * @param columns
      * @param oldStruct
      * @return

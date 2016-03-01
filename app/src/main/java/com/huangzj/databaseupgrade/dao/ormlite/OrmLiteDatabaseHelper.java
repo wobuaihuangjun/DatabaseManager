@@ -3,8 +3,6 @@ package com.huangzj.databaseupgrade.dao.ormlite;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.huangzj.databaseupgrade.util.CollectionUtil;
-import com.huangzj.databaseupgrade.util.LogUtil;
 import com.j256.ormlite.android.AndroidDatabaseConnection;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
@@ -17,6 +15,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * Created by huangzj on 2016/2/24.
@@ -36,7 +36,8 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     /**
-     *注册数据表
+     * 注册数据表
+     *
      * @param clazz 表的列结构bean
      * @param <T>
      */
@@ -62,17 +63,18 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
         return true;
     }
+
     /**
      * 升级处理
      */
     public void upgrade(SQLiteDatabase db, ConnectionSource cs, int oldVersion, int newVersion) {
-        LogUtil.i("数据库升级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
+        Timber.i("数据库升级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
         try {
             for (DatabaseHandler handler : tableHandlers) {
                 handler.onUpgrade(db, cs, oldVersion, newVersion);
             }
         } catch (SQLException e) {
-            LogUtil.e(e);
+            Timber.e("数据库升级出错", e);
         }
     }
 
@@ -80,13 +82,13 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
      * 降级处理
      */
     public void downgrade(ConnectionSource cs, int oldVersion, int newVersion) {
-        LogUtil.i("数据库降级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
+        Timber.i("数据库降级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
         try {
             for (DatabaseHandler handler : tableHandlers) {
                 handler.onDowngrade(cs, oldVersion, newVersion);
             }
         } catch (SQLException e) {
-            LogUtil.e(e);
+            Timber.e("数据库降级出错", e);
         }
     }
 
@@ -99,7 +101,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
                 handler.clear(connectionSource);
             }
         } catch (SQLException e) {
-            LogUtil.e(e);
+            Timber.e("清除数据库数据出错", e);
         }
     }
 
@@ -109,7 +111,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
                 handler.create(connectionSource);
             }
         } catch (SQLException e) {
-            LogUtil.e(e);
+            Timber.e("数据库建表出错", e);
         }
     }
 
@@ -168,7 +170,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
             try {
                 dao = super.getDao(cls);
             } catch (SQLException e) {
-                LogUtil.e(e);
+                Timber.e("数据库操作出错", e);
                 return null;
             }
             daoMap.put(clsName, dao);
