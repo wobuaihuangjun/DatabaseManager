@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         cityDao.clearTableDataSync(new DbCallBack() {
             @Override
             public void onComplete(Object data) {
-                Timber.d("---------sync insert complete--" + data);
+                Timber.d("---------sync clear complete--" + data);
             }
         });
     }
