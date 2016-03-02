@@ -16,14 +16,15 @@ public class RxUtils {
     public static void unsubscribeIfNotNull(Subscription subscription) {
         if (subscription != null) {
             subscription.unsubscribe();
+            Timber.i("-------unsubscribe");
         }
     }
 
     public static CompositeSubscription getNewCompositeSubIfUnsubscribed(CompositeSubscription subscription) {
         if (subscription == null || subscription.isUnsubscribed()) {
+            Timber.i("-------subscribe");
             return new CompositeSubscription();
         }
-
         return subscription;
     }
 
@@ -38,11 +39,11 @@ public class RxUtils {
      * @param <T>
      * @return
      */
-    public static <T> Subscription subscribe(Callable<T> callable, Action1<T> action, Action1<Throwable> onError) {
+    public static <T> Subscription subscribe(Callable<T> callable, Action1<T> action) {
         return getDbObservable(callable)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(action, onError);
+                .subscribe(action);
     }
 
 

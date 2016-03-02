@@ -1,10 +1,7 @@
 package com.huangzj.databaseupgrade;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.TextView;
 
 import com.huangzj.databaseupgrade.dao.DbCallBack;
@@ -14,6 +11,8 @@ import com.huangzj.databaseupgrade.util.UUIDUtil;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,24 +21,40 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                initData();
-                getData();
-            }
-        });
+        ButterKnife.bind(this);
         cityDao = new CityDao(this);
     }
 
+    @OnClick(R.id.insert)
+    void inset() {
+        initData();
+    }
+
+    @OnClick(R.id.query)
+    void query() {
+        getData();
+    }
+
+    @OnClick(R.id.clear)
+    void clear() {
+        cityDao.clearTableDataSync(new DbCallBack() {
+            @Override
+            public void onComplete(Object data) {
+                Timber.d("---------sync insert complete--" + data);
+            }
+        });
+    }
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onResume() {
+        super.onResume();
+        cityDao.subscribe();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        cityDao.unsubscribe();
     }
 
     CityDao cityDao;
@@ -47,15 +62,9 @@ public class MainActivity extends AppCompatActivity {
     private void getData() {
         cityDao.queryForAllSync(new DbCallBack() {
             @Override
-            public void onSuccess(Object data) {
+            public void onComplete(Object data) {
                 Timber.d("---------sync query success");
                 updateView((List<City>) data);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                Timber.d("---------sync query fail");
-
             }
         });
     }
@@ -86,13 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
         cityDao.insertSync(city, new DbCallBack() {
             @Override
-            public void onSuccess(Object data) {
-                Timber.d("---------sync insert success");
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                Timber.e("---------sync insert fail", throwable);
+            public void onComplete(Object data) {
+                Timber.d("---------sync insert complete--" + data);
             }
         });
     }

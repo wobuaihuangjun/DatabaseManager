@@ -27,17 +27,17 @@ public class DaoObserver {
     }
 
     public static void regist(DaoListener daoListener) {
-        daoListener.setDaoThreadMode(DaoThreadMode.MainThread);
-        regist(daoListener, DaoThreadMode.MainThread);
+//        daoListener.setDaoThreadMode(DaoThreadMode.MainThread);
+//        regist(daoListener, DaoThreadMode.MainThread);
     }
 
     public static void regist(DaoListener daoListener, DaoThreadMode daoThreadMode) {
-        daoListener.setDaoThreadMode(daoThreadMode);
-        listeners.add(daoListener);
+//        daoListener.setDaoThreadMode(daoThreadMode);
+//        listeners.add(daoListener);
     }
 
     public static void unRegist(DaoListener daoListener) {
-        listeners.remove(daoListener);
+//        listeners.remove(daoListener);
     }
 
     /**
@@ -46,7 +46,7 @@ public class DaoObserver {
      * @param data
      */
     public static synchronized void publish(int daoOperationType, Object data) {
-        notifyDataChanged(daoOperationType, data);
+//        notifyDataChanged(daoOperationType, data);
     }
 
     private static void notifyDataChanged(final int daoOperationType, final Object data) {

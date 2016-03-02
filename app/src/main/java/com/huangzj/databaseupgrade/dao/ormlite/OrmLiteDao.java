@@ -76,7 +76,7 @@ public class OrmLiteDao<T> {
                 }
             }
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return result == list.size();
     }
@@ -92,7 +92,7 @@ public class OrmLiteDao<T> {
         try {
             result = ormLiteDao.create(t);
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         if (result > 0) {
             DaoObserver.publish(DaoOperation.INSERT, t);
@@ -123,7 +123,7 @@ public class OrmLiteDao<T> {
         try {
             count = ormLiteDao.countOf();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         if (count == 0) {
             return true;
@@ -134,7 +134,7 @@ public class OrmLiteDao<T> {
             deleteBuilder.where().isNotNull("id");
             result = deleteBuilder.delete();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return result > 0;
     }
@@ -145,7 +145,7 @@ public class OrmLiteDao<T> {
      * @param id
      * @return
      */
-    public boolean deleteById(int id) {
+    public boolean deleteById(Integer id) {
         if (checkIdIsNull(id)) {
             return false;
         }
@@ -155,7 +155,7 @@ public class OrmLiteDao<T> {
             t = ormLiteDao.queryForId(id);
             result = ormLiteDao.deleteById(id);
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
             return false;
         }
 
@@ -176,7 +176,7 @@ public class OrmLiteDao<T> {
             deleteBuilder.where().eq(columnName, value);
             result = deleteBuilder.delete();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
             return false;
         }
 

@@ -7,7 +7,5 @@ package com.huangzj.databaseupgrade.dao;
  */
 public interface DbCallBack {
 
-    void onSuccess(Object data);
-
-    void onError(Throwable throwable);
+    void onComplete(Object data);
 }
