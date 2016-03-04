@@ -22,7 +22,7 @@ public class RxUtils {
 
     public static CompositeSubscription getNewCompositeSubIfUnsubscribed(CompositeSubscription subscription) {
         if (subscription == null || subscription.isUnsubscribed()) {
-            Timber.i("-------subscribe");
+            Timber.i("-------init rxjava");
             return new CompositeSubscription();
         }
         return subscription;

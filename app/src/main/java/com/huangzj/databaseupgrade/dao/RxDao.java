@@ -31,18 +31,18 @@ public class RxDao<T> extends OrmLiteDao<T> {
     private CompositeSubscription subscriptions;
     private boolean cache;
     private Class<T> clazz;
-    private String tabaleName;
+    private String tableName;
 
     /**
-     * @param context
-     * @param cls
+     * @param context context
+     * @param cls     表结构clazz
      * @param cache   是否缓存，如果设置缓存，数据查询将优先读取缓存
      */
     public RxDao(Context context, Class<T> cls, boolean cache) {
         super(context, cls);
         this.clazz = cls;
         this.cache = cache;
-        tabaleName = DatabaseUtil.extractTableName(cls);
+        tableName = DatabaseUtil.extractTableName(cls);
     }
 
     /**
@@ -67,7 +67,7 @@ public class RxDao<T> extends OrmLiteDao<T> {
     public boolean insert(T t) {
         boolean result = super.insert(t);
         if (result) {
-            DbCache.clearByTable(tabaleName);
+            DbCache.getInstance().clearByTable(tableName);
         }
         return result;
     }
@@ -97,7 +97,7 @@ public class RxDao<T> extends OrmLiteDao<T> {
     public boolean insertForBatch(List<T> list) {
         boolean result = super.insertForBatch(list);
         if (result) {
-            DbCache.clearByTable(tabaleName);
+            DbCache.getInstance().clearByTable(tableName);
         }
         return result;
     }
@@ -127,7 +127,7 @@ public class RxDao<T> extends OrmLiteDao<T> {
     public boolean clearTableData() {
         boolean result = super.clearTableData();
         if (result) {
-            DbCache.clearByTable(tabaleName);
+            DbCache.getInstance().clearByTable(tableName);
         }
         return result;
     }
@@ -157,7 +157,7 @@ public class RxDao<T> extends OrmLiteDao<T> {
     public boolean deleteById(Integer id) {
         boolean result = super.deleteById(id);
         if (result) {
-            DbCache.clearByTable(tabaleName);
+            DbCache.getInstance().clearByTable(tableName);
         }
         return result;
     }
@@ -185,14 +185,14 @@ public class RxDao<T> extends OrmLiteDao<T> {
         if (!cache) {
             return super.queryForAll();
         }
-        String json = DbCache.getCache(tabaleName, "queryForAll");
+        String json = DbCache.getInstance().getCache(tableName, "queryForAll");
         List<T> result = JSONUtil.toCollection(json, List.class, clazz);
         if (result != null) {
             Timber.d("---------query from cache--");
             return result;
         }
         result = super.queryForAll();
-        DbCache.addCache(tabaleName, "queryForAll", result);
+        DbCache.getInstance().addCache(tableName, "queryForAll", result);
         return result;
     }
 

@@ -25,9 +25,25 @@ public class DbCache {
     /**
      * 所有缓存的总集，以表名为key，value为对应数据表下，所有查询条件的数据总集，每条查询对应的数据以json格式保存
      */
-    private static LruCache<String, Map<String, String>> mLruCache;
+    private LruCache<String, Map<String, String>> mLruCache;
 
-    private static void initCache() {
+    private static DbCache mInstance;
+
+    private DbCache() {
+    }
+
+    public static DbCache getInstance() {
+        if (mInstance == null) {
+            synchronized (DbCache.class) {
+                if (mInstance == null) {
+                    mInstance = new DbCache();
+                }
+            }
+        }
+        return mInstance;
+    }
+
+    private synchronized void initCache() {
         Timber.i("--------init cache----");
         mLruCache = new LruCache<String, Map<String, String>>(CACHE_SIZE) {
             @Override
@@ -37,7 +53,7 @@ public class DbCache {
         };
     }
 
-    public static <T> void addCache(String tableName, String query, T value) {
+    public <T> void addCache(String tableName, String query, T value) {
         if (mLruCache == null) {
             initCache();
         }
@@ -57,7 +73,7 @@ public class DbCache {
         }
     }
 
-    public static String getCache(String tableName, String query) {
+    public String getCache(String tableName, String query) {
         if (inValid(tableName) || inValid(query)) {
             Timber.i("--------mLruCache is empty");
             return null;
@@ -71,7 +87,7 @@ public class DbCache {
         return tableCache.get(query);
     }
 
-    public static void clearByQuery(String tableName, String query) {
+    public void clearByQuery(String tableName, String query) {
         if (inValid(tableName) || inValid(query)) {
             return;
         }
@@ -81,7 +97,7 @@ public class DbCache {
         }
     }
 
-    public static void clearByTable(String tableName) {
+    public void clearByTable(String tableName) {
         if (inValid(tableName)) {
             return;
         }
@@ -98,14 +114,11 @@ public class DbCache {
         System.gc();
     }
 
-    private static boolean inValid(String key) {
+    private boolean inValid(String key) {
         if (mLruCache == null) {
             return true;
         }
-        if (TextUtils.isEmpty(key)) {
-            return true;
-        }
-        return false;
+        return TextUtils.isEmpty(key);
     }
 
 }
