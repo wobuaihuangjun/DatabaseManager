@@ -48,6 +48,8 @@ public class DbCache {
         mLruCache = new LruCache<String, Map<String, String>>(CACHE_SIZE) {
             @Override
             protected int sizeOf(String key, Map<String, String> value) {
+                // 此处计算内存占用比较麻烦，所以使用了条数作为缓存限制
+                // 如果大家有好的建议欢迎提出
                 return value.size();
             }
         };

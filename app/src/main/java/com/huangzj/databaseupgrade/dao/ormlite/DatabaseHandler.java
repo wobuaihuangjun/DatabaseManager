@@ -59,6 +59,7 @@ public class DatabaseHandler<T> {
                                   List<ColumnStruct> newStruct) throws SQLException {
         if (DatabaseUtil.hasChangeColumnLimit(oldStruct, newStruct)) {
             Timber.d("数据表已有字段的描述改变");
+            // 字段的限制条件改变时，要保证数据的无损一直没有想到完美的方案，欢迎完善
             // 已有字段描述改变了，删除旧表，重建新表
             reset(cs);
         } else {

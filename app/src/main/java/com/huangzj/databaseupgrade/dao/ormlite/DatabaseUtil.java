@@ -124,6 +124,7 @@ public class DatabaseUtil {
      * @return
      */
     public static List<ColumnStruct> getColumnStruct(String tableStruct) {
+        // 这个函数总是给人一种不爽的感觉，欢迎提出更优秀的方案
         List<ColumnStruct> columnStructList = new ArrayList<>();
 //      "CREATE TABLE `msg_record` (`id` INTEGER PRIMARY KEY AUTOINCREMENT , `title` VARCHAR ,  UNIQUE (`number`))"
         // 解析过程根据标准的ormlite建表语句设计
