@@ -2,7 +2,6 @@ package com.huangzj.databaseupgrade.dao.ormlite;
 
 import android.content.Context;
 
-import com.huangzj.databaseupgrade.dao.DaoObserver;
 import com.huangzj.databaseupgrade.dao.DaoOperation;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
@@ -94,11 +93,6 @@ public class OrmLiteDao<T> {
         } catch (SQLException e) {
             Timber.e("", e);
         }
-        if (result > 0) {
-            DaoObserver.publish(DaoOperation.INSERT, t);
-        } else {
-            Timber.e("insert error,insert line:" + result);
-        }
         return result > 0;
     }
 
@@ -109,13 +103,7 @@ public class OrmLiteDao<T> {
      * @return
      */
     public boolean insertForBatch(List<T> list) {
-        boolean result = doBatchInTransaction(list, DaoOperation.INSERT);
-        if (result) {
-            DaoObserver.publish(DaoOperation.INSERT_BATCH, list);
-        } else {
-            Timber.e("insert error,result:" + result);
-        }
-        return result;
+        return doBatchInTransaction(list, DaoOperation.INSERT);
     }
 
     public boolean clearTableData() {
@@ -149,43 +137,27 @@ public class OrmLiteDao<T> {
         if (checkIdIsNull(id)) {
             return false;
         }
-        int result = 0;
-        T t = null;
+        int result;
         try {
-            t = ormLiteDao.queryForId(id);
             result = ormLiteDao.deleteById(id);
         } catch (SQLException e) {
             Timber.e("", e);
             return false;
         }
-
-        if (result > 0) {
-            DaoObserver.publish(DaoOperation.DELETE, t);
-        } else {
-            Timber.w("delete error,delete line:" + result);
-        }
-        return true;
+        return result > 0;
     }
 
     public boolean deleteByColumnName(String columnName, Object value) {
         int result = 0;
-        List<T> list = null;
         DeleteBuilder deleteBuilder = ormLiteDao.deleteBuilder();
         try {
-            list = queryByColumnName(columnName, value);
             deleteBuilder.where().eq(columnName, value);
             result = deleteBuilder.delete();
         } catch (SQLException e) {
-            Timber.e("", e);
+            Timber.w("delete error, columnName: " + columnName + ", value: " + value + ", result: " + result, e);
             return false;
         }
-
-        if (result > 0) {
-            DaoObserver.publish(DaoOperation.DELETE, list);
-        } else {
-            Timber.w("delete error, columnName: " + columnName + ", value: " + value + ", result: " + result);
-        }
-        return true;
+        return result > 0;
     }
 
     /**
@@ -196,26 +168,19 @@ public class OrmLiteDao<T> {
      */
     public boolean deleteByColumnName(Map<String, Object> map) {
         int result = 0;
-        List<T> list = null;
         DeleteBuilder deleteBuilder = ormLiteDao.deleteBuilder();
         Where where = deleteBuilder.where();
         try {
-            list = queryByColumnName(map);
             where.isNotNull("id");
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 where.and().eq(entry.getKey(), entry.getValue());
             }
             result = deleteBuilder.delete();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.w("delete error,delete line:" + result, e);
             return false;
         }
-        if (result > 0) {
-            DaoObserver.publish(DaoOperation.DELETE, list);
-        } else {
-            Timber.w("delete error,delete line:" + result);
-        }
-        return true;
+        return result > 0;
     }
 
     /**
@@ -224,13 +189,7 @@ public class OrmLiteDao<T> {
      * @param list
      */
     public boolean deleteForBatch(List<T> list) {
-        boolean result = doBatchInTransaction(list, DaoOperation.DELETE);
-        if (result) {
-            DaoObserver.publish(DaoOperation.DELETE_BATCH, list);
-        } else {
-            Timber.w("deleteForBatch error,result:" + result);
-        }
-        return result;
+        return doBatchInTransaction(list, DaoOperation.DELETE);
     }
 
     public long getCount(Map<String, Object> map) {
@@ -246,7 +205,7 @@ public class OrmLiteDao<T> {
             PreparedQuery<T> preparedQuery = queryBuilder.prepare();
             count = ormLiteDao.countOf(preparedQuery);
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return count;
     }
@@ -261,7 +220,7 @@ public class OrmLiteDao<T> {
         try {
             list = ormLiteDao.queryForAll();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return list;
     }
@@ -280,7 +239,7 @@ public class OrmLiteDao<T> {
         try {
             t = ormLiteDao.queryForId(id);
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return t;
     }
@@ -296,7 +255,8 @@ public class OrmLiteDao<T> {
         try {
             list = ormLiteDao.queryForFieldValuesArgs(map);
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
+            ;
         }
         return list;
     }
@@ -324,7 +284,7 @@ public class OrmLiteDao<T> {
             queryBuilder.where().eq(columnName, value);
             list = queryBuilder.query();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return list;
     }
@@ -347,7 +307,7 @@ public class OrmLiteDao<T> {
             queryBuilder.orderBy(orderColumn, ascending);
             list = queryBuilder.query();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return list;
 
@@ -373,7 +333,7 @@ public class OrmLiteDao<T> {
             queryBuilder.orderBy(orderColumn, ascending);
             list = queryBuilder.query();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return list;
 
@@ -401,7 +361,7 @@ public class OrmLiteDao<T> {
             queryBuilder.limit(count);
             list = queryBuilder.query();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return list;
     }
@@ -431,7 +391,7 @@ public class OrmLiteDao<T> {
             }
             list = queryBuilder.query();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return list;
     }
@@ -453,7 +413,7 @@ public class OrmLiteDao<T> {
             }
             t = queryBuilder.queryForFirst();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return t;
     }
@@ -470,7 +430,7 @@ public class OrmLiteDao<T> {
             }
             t = queryBuilder.queryForFirst();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return t;
     }
@@ -483,7 +443,7 @@ public class OrmLiteDao<T> {
             queryBuilder.where().eq(columnName, value);
             t = queryBuilder.queryForFirst();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return t;
     }
@@ -495,7 +455,7 @@ public class OrmLiteDao<T> {
             queryBuilder.where().eq(columnName, value);
             t = queryBuilder.queryForFirst();
         } catch (SQLException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         }
         return t;
     }
@@ -508,21 +468,6 @@ public class OrmLiteDao<T> {
      */
     public boolean update(T t) {
         int result = updateIfValueNotNull(t);
-        if (result > 0) {
-            T t1 = null;
-            try {
-                t1 = ormLiteDao.queryForSameId(t);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            if (t1 != null) {
-                DaoObserver.publish(DaoOperation.UPDATE, t1);
-            } else {
-                Timber.e("no find the same id of:" + t);
-            }
-        } else {
-            Timber.w("update error,update line:" + result);
-        }
         return result > 0;
     }
 
@@ -537,16 +482,11 @@ public class OrmLiteDao<T> {
             setObjectValueIfNotNull(t1, t);
             result = ormLiteDao.update(t1);
         } catch (IllegalAccessException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         } catch (NoSuchFieldException e) {
-            Timber.e("", e);;
+            Timber.e("", e);
         } catch (SQLException e) {
-            Timber.e("", e);;
-        }
-        if (result > 0) {
-            DaoObserver.publish(DaoOperation.UPDATE, t1); //发布
-        } else {
-            Timber.w("update error,update line:" + result);
+            Timber.e("", e);
         }
         return result > 0;
     }
@@ -562,18 +502,23 @@ public class OrmLiteDao<T> {
             setObjectValueIfNotNull(t1, t);
             result = ormLiteDao.update(t1);
         } catch (IllegalAccessException e) {
-            Timber.e("", e);;
+            Timber.e("update error,update line:" + result, e);
         } catch (NoSuchFieldException e) {
-            Timber.e("", e);;
+            Timber.e("update error,update line:" + result, e);
         } catch (SQLException e) {
-            Timber.e("", e);;
-        }
-        if (result > 0) {
-            DaoObserver.publish(DaoOperation.UPDATE, t1); //发布
-        } else {
-            Timber.w("update error,update line:" + result);
+            Timber.e("update error,update line:" + result, e);
         }
         return result > 0;
+    }
+
+    /**
+     * 批量修改
+     *
+     * @param list
+     * @return
+     */
+    public boolean updateForBatch(List<T> list) {
+        return doBatchInTransaction(list, DaoOperation.UPDATE);
     }
 
     /**
@@ -604,23 +549,7 @@ public class OrmLiteDao<T> {
             }
             result = updateBuilder.update();
         } catch (SQLException e) {
-            Timber.e("", e);;
-        }
-        return result;
-    }
-
-    /**
-     * 批量修改
-     *
-     * @param list
-     * @return
-     */
-    public boolean updateForBatch(List<T> list) {
-        boolean result = doBatchInTransaction(list, DaoOperation.UPDATE);
-        if (result) {
-            DaoObserver.publish(DaoOperation.UPDATE_BATCH, list); //发布
-        } else {
-            Timber.e("updateForBatch error,result:" + result);
+            Timber.e("", e);
         }
         return result;
     }
@@ -663,7 +592,7 @@ public class OrmLiteDao<T> {
             try {
                 valueObj = field.get(obj);
             } catch (IllegalAccessException e) {
-                Timber.e("", e);;
+                Timber.e("", e);
             }
             if (valueObj != null) {
                 map.put(field.getName(), valueObj);
@@ -671,7 +600,6 @@ public class OrmLiteDao<T> {
                 Timber.w(field.getName() + " is null.");
             }
         }
-        Timber.i("map" + map);
         return map;
     }
 

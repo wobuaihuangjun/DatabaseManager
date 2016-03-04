@@ -26,12 +26,19 @@ import timber.log.Timber;
 public class RxDao<T> extends OrmLiteDao<T> {
 
     private CompositeSubscription subscriptions;
+    private boolean cache;
     private Class<T> clazz;
     private String tabaleName;
 
-    public RxDao(Context context, Class<T> cls) {
+    /**
+     * @param context
+     * @param cls
+     * @param cache   是否缓存，如果设置缓存，数据查询将优先读取缓存
+     */
+    public RxDao(Context context, Class<T> cls, boolean cache) {
         super(context, cls);
         this.clazz = cls;
+        this.cache = cache;
         tabaleName = DatabaseUtil.extractTableName(cls);
     }
 
@@ -172,14 +179,17 @@ public class RxDao<T> extends OrmLiteDao<T> {
     }
 
     public List<T> queryForAll() {
+        if (!cache) {
+            return super.queryForAll();
+        }
         String json = DbCache.getCache(tabaleName, "queryForAll");
         List<T> result = JSONUtil.toCollection(json, List.class, clazz);
         if (result != null) {
             Timber.d("---------query from cache--");
-            return result;
+//            return result;
         }
         result = super.queryForAll();
-        DbCache.addCache(tabaleName, "queryAll", result);
+        DbCache.addCache(tabaleName, "queryForAll", result);
         return result;
     }
 

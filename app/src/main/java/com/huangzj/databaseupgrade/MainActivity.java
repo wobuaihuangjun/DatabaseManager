@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        cityDao = new CityDao(this);
+        cityDao = new CityDao(this, true);
     }
 
     @OnClick(R.id.insert)

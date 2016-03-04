@@ -15,7 +15,11 @@ import java.util.List;
 public class CityDao extends RxDao<City> {
 
     public CityDao(Context context) {
-        super(context, City.class);
+        super(context, City.class, false);
+    }
+
+    public CityDao(Context context, boolean cache) {
+        super(context, City.class, cache);
     }
 
     public boolean createForBatch(List<City> list) {
