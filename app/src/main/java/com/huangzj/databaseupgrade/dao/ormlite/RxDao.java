@@ -186,7 +186,7 @@ public class RxDao<T> extends OrmLiteDao<T> {
         List<T> result = JSONUtil.toCollection(json, List.class, clazz);
         if (result != null) {
             Timber.d("---------query from cache--");
-//            return result;
+            return result;
         }
         result = super.queryForAll();
         DbCache.addCache(tabaleName, "queryForAll", result);
