@@ -2,7 +2,7 @@ package com.huangzj.databaseupgrade.dao.ormlite;
 
 import android.content.Context;
 
-import com.huangzj.databaseupgrade.dao.DaoOperation;
+import com.huangzj.databaseupgrade.dao.DatabaseHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.DeleteBuilder;

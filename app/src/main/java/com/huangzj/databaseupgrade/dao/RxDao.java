@@ -1,9 +1,12 @@
-package com.huangzj.databaseupgrade.dao.ormlite;
+package com.huangzj.databaseupgrade.dao;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.huangzj.databaseupgrade.dao.DbCallBack;
+import com.huangzj.databaseupgrade.dao.ormlite.DatabaseUtil;
+import com.huangzj.databaseupgrade.dao.ormlite.DbCache;
+import com.huangzj.databaseupgrade.dao.ormlite.DbCallBack;
+import com.huangzj.databaseupgrade.dao.ormlite.OrmLiteDao;
 import com.huangzj.databaseupgrade.rxjava.RxUtils;
 import com.huangzj.databaseupgrade.util.JSONUtil;
 

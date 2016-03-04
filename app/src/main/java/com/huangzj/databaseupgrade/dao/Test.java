@@ -1,8 +1,9 @@
-package com.huangzj.databaseupgrade.dao.ormlite;
+package com.huangzj.databaseupgrade.dao;
 
 
 import com.huangzj.databaseupgrade.dao.bean.City;
 import com.huangzj.databaseupgrade.dao.ormlite.ColumnStruct;
+import com.huangzj.databaseupgrade.dao.ormlite.DatabaseHandler;
 import com.huangzj.databaseupgrade.dao.ormlite.DatabaseUtil;
 import com.huangzj.databaseupgrade.util.CollectionUtil;
 

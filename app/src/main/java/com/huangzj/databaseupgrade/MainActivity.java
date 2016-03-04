@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.huangzj.databaseupgrade.dao.DbCallBack;
+import com.huangzj.databaseupgrade.dao.ormlite.DbCallBack;
 import com.huangzj.databaseupgrade.dao.bean.City;
 import com.huangzj.databaseupgrade.dao.bean.CityDao;
 import com.huangzj.databaseupgrade.util.UUIDUtil;

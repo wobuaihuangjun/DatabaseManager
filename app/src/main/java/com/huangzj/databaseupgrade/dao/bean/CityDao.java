@@ -2,8 +2,7 @@ package com.huangzj.databaseupgrade.dao.bean;
 
 import android.content.Context;
 
-import com.huangzj.databaseupgrade.dao.ormlite.OrmLiteDao;
-import com.huangzj.databaseupgrade.dao.ormlite.RxDao;
+import com.huangzj.databaseupgrade.dao.RxDao;
 
 import java.util.List;
 
