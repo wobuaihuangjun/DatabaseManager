@@ -39,7 +39,6 @@ public class DatabaseHandler<T> {
 
         if (oldStruct.isEmpty() && newStruct.isEmpty()) {
             Timber.d("数据表结构都为空！不是合法的数据库bean！！！");
-            return;
         } else if (oldStruct.isEmpty()) {
             Timber.d("新增表");
             create(cs);
@@ -171,7 +170,12 @@ public class DatabaseHandler<T> {
      * 数据库升级
      */
     public void onUpgrade(SQLiteDatabase db, ConnectionSource cs, int oldVersion, int newVersion) throws SQLException {
-        onUpgrade(db, cs);
+        try {
+            onUpgrade(db, cs);
+        } catch (Exception e) {
+            Timber.e("数据表升级异常，重建表", e);
+        }
+
     }
 
     /**
