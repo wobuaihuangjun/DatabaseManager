@@ -111,7 +111,7 @@ public class DatabaseHandler<T> {
      *
      * @param columns 原始列减去删除的列
      */
-    private void upgradeByCopy(SQLiteDatabase db, ConnectionSource cs, String columns) {
+    private void upgradeByCopy(SQLiteDatabase db, ConnectionSource cs, String columns) throws SQLException {
         db.beginTransaction();
         try {
             //Rename table
@@ -120,13 +120,8 @@ public class DatabaseHandler<T> {
             db.execSQL(sql);
 
             //Create table
-            try {
-                sql = TableUtils.getCreateTableStatements(cs, clazz).get(0);
-                db.execSQL(sql);
-            } catch (Exception e) {
-                Timber.e("", e);
-                TableUtils.createTable(cs, clazz);
-            }
+            sql = TableUtils.getCreateTableStatements(cs, clazz).get(0);
+            db.execSQL(sql);
             sql = "INSERT INTO " + tableName + " (" + columns + ") " +
                     " SELECT " + columns + " FROM " + tempTableName;
             db.execSQL(sql);
@@ -137,7 +132,7 @@ public class DatabaseHandler<T> {
 
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            Timber.e("", e);
+            throw new SQLException("更新数据表失败");
         } finally {
             db.endTransaction();
         }
@@ -174,6 +169,7 @@ public class DatabaseHandler<T> {
             onUpgrade(db, cs);
         } catch (Exception e) {
             Timber.e("数据表升级异常，重建表", e);
+            reset(cs);
         }
 
     }
