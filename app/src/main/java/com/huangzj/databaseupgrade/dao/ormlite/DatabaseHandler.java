@@ -120,8 +120,13 @@ public class DatabaseHandler<T> {
             db.execSQL(sql);
 
             //Create table
-            sql = TableUtils.getCreateTableStatements(cs, clazz).get(0);
-            db.execSQL(sql);
+            try {
+                sql = TableUtils.getCreateTableStatements(cs, clazz).get(0);
+                db.execSQL(sql);
+            } catch (Exception e) {
+                Timber.e("", e);
+                TableUtils.createTable(cs, clazz);
+            }
             sql = "INSERT INTO " + tableName + " (" + columns + ") " +
                     " SELECT " + columns + " FROM " + tempTableName;
             db.execSQL(sql);
