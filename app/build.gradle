@@ -31,11 +31,12 @@ dependencies {
 
     compile 'com.jakewharton.timber:timber:2.4.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.7.0'
-    compile 'com.jakewharton:butterknife:7.0.1'
 
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'io.reactivex:rxjava:1.1.1'
 
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
+
+    compile 'com.jakewharton:butterknife:7.0.1'
 }

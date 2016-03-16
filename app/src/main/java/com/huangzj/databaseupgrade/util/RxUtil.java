@@ -1,4 +1,4 @@
-package com.huangzj.databaseupgrade.rxjava;
+package com.huangzj.databaseupgrade.util;
 
 import java.util.concurrent.Callable;
 
@@ -11,7 +11,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-public class RxUtils {
+public class RxUtil {
 
     public static void unsubscribeIfNotNull(Subscription subscription) {
         if (subscription != null) {
@@ -59,5 +59,9 @@ public class RxUtils {
                         }
                     }
                 });
+    }
+
+    public void test(){
+
     }
 }

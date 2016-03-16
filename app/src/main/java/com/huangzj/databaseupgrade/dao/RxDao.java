@@ -1,20 +1,23 @@
 package com.huangzj.databaseupgrade.dao;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.huangzj.databaseupgrade.dao.ormlite.DatabaseUtil;
 import com.huangzj.databaseupgrade.dao.ormlite.DbCache;
 import com.huangzj.databaseupgrade.dao.ormlite.DbCallBack;
 import com.huangzj.databaseupgrade.dao.ormlite.OrmLiteDao;
-import com.huangzj.databaseupgrade.rxjava.RxUtils;
+import com.huangzj.databaseupgrade.util.RxUtil;
 import com.huangzj.databaseupgrade.util.JSONUtil;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -32,6 +35,10 @@ public class RxDao<T> extends OrmLiteDao<T> {
     private boolean cache;
     private Class<T> clazz;
     private String tableName;
+
+    public RxDao(Context context, Class<T> cls) {
+        this(context, cls, true);
+    }
 
     /**
      * @param context context
@@ -51,14 +58,14 @@ public class RxDao<T> extends OrmLiteDao<T> {
      * 注意：调用{@link RxDao#unsubscribe()}方法后，如果需要重新订阅读写操作，必须调用此方法
      */
     public void subscribe() {
-        subscriptions = RxUtils.getNewCompositeSubIfUnsubscribed(subscriptions);
+        subscriptions = RxUtil.getNewCompositeSubIfUnsubscribed(subscriptions);
     }
 
     /**
      * 异步读写后，必须调用此方法取消订阅
      */
     public void unsubscribe() {
-        RxUtils.unsubscribeIfNotNull(subscriptions);
+        RxUtil.unsubscribeIfNotNull(subscriptions);
     }
 
     /**
@@ -75,8 +82,8 @@ public class RxDao<T> extends OrmLiteDao<T> {
     /**
      * 增加一条记录
      */
-    public CompositeSubscription insertSync(final T t, @NonNull final DbCallBack listener) {
-        Subscription subscription = RxUtils.subscribe(new Callable<Boolean>() {
+    public Observable insertSync(final T t, final DbCallBack listener) {
+        Observable observable = subscribe(new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 return insert(t);
@@ -87,12 +94,11 @@ public class RxDao<T> extends OrmLiteDao<T> {
                 listener.onComplete(result);
             }
         });
-        subscriptions.add(subscription);
-        return subscriptions;
+        return observable;
     }
 
     /**
-     * 批量插入
+     * 批量插入;
      */
     public boolean insertForBatch(List<T> list) {
         boolean result = super.insertForBatch(list);
@@ -105,8 +111,8 @@ public class RxDao<T> extends OrmLiteDao<T> {
     /**
      * 批量插入
      */
-    public CompositeSubscription insertForBatchSync(final List<T> list, @NonNull final DbCallBack listener) {
-        Subscription subscription = RxUtils.subscribe(new Callable<Boolean>() {
+    public Observable insertForBatchSync(final List<T> list, final DbCallBack listener) {
+        Observable observable = subscribe(new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 return insertForBatch(list);
@@ -117,8 +123,7 @@ public class RxDao<T> extends OrmLiteDao<T> {
                 listener.onComplete(result);
             }
         });
-        subscriptions.add(subscription);
-        return subscriptions;
+        return observable;
     }
 
     /**
@@ -135,8 +140,8 @@ public class RxDao<T> extends OrmLiteDao<T> {
     /**
      * 清空数据
      */
-    public CompositeSubscription clearTableDataSync(@NonNull final DbCallBack listener) {
-        Subscription subscription = RxUtils.subscribe(new Callable<Boolean>() {
+    public Observable clearTableDataSync(final DbCallBack listener) {
+        Observable observable = subscribe(new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 return clearTableData();
@@ -147,8 +152,7 @@ public class RxDao<T> extends OrmLiteDao<T> {
                 listener.onComplete(result);
             }
         });
-        subscriptions.add(subscription);
-        return subscriptions;
+        return observable;
     }
 
     /**
@@ -165,8 +169,8 @@ public class RxDao<T> extends OrmLiteDao<T> {
     /**
      * 根据id删除记录
      */
-    public CompositeSubscription deleteByIdSync(final Integer id, @NonNull final DbCallBack listener) {
-        Subscription subscription = RxUtils.subscribe(new Callable<Boolean>() {
+    public Observable deleteByIdSync(final Integer id, final DbCallBack listener) {
+        Observable observable = subscribe(new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 return deleteById(id);
@@ -177,8 +181,7 @@ public class RxDao<T> extends OrmLiteDao<T> {
                 listener.onComplete(result);
             }
         });
-        subscriptions.add(subscription);
-        return subscriptions;
+        return observable;
     }
 
     public List<T> queryForAll() {
@@ -196,8 +199,17 @@ public class RxDao<T> extends OrmLiteDao<T> {
         return result;
     }
 
-    public CompositeSubscription queryForAllSync(@NonNull final DbCallBack listener) {
-        Subscription subscription = RxUtils.subscribe(new Callable<List<T>>() {
+    public Observable queryForAllObservable() {
+        return getDbObservable(new Callable() {
+            @Override
+            public Object call() throws Exception {
+                return queryForAll();
+            }
+        });
+    }
+
+    public Observable queryForAllSync(final DbCallBack listener) {
+        Observable observable = subscribe(new Callable<List<T>>() {
             @Override
             public List<T> call() {
                 return queryForAll();
@@ -208,9 +220,35 @@ public class RxDao<T> extends OrmLiteDao<T> {
                 listener.onComplete(result);
             }
         });
+
+        return observable;
+    }
+
+    public <T> Observable<T> subscribe(Callable<T> callable, Action1<T> action) {
+        Observable<T> observable = getDbObservable(callable);
+        Subscription subscription = observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(action);
+        if (subscriptions == null) {
+            throw new RuntimeException("Do you call subscribe()");
+        }
         subscriptions.add(subscription);
-        return subscriptions;
+        return observable;
     }
 
 
+    private <T> Observable<T> getDbObservable(final Callable<T> func) {
+        return Observable.create(
+                new Observable.OnSubscribe<T>() {
+                    @Override
+                    public void call(Subscriber<? super T> subscriber) {
+                        try {
+                            subscriber.onNext(func.call());
+                        } catch (Exception ex) {
+                            Timber.e("Error reading from the database", ex);
+                        }
+                    }
+                });
+    }
 }
