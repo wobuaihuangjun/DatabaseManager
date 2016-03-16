@@ -5,7 +5,7 @@ import android.os.Bundle;
 /**
  * Created by huangzj on 2016/3/15.
  */
-public abstract class MvpPresenter<V extends MvpView> {
+public class MvpPresenter<V extends MvpView> {
 
     protected V viewDelegate;
 
@@ -24,7 +24,7 @@ public abstract class MvpPresenter<V extends MvpView> {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
     }
 
-    public void onCreated(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
     }
 
     public void onResume() {

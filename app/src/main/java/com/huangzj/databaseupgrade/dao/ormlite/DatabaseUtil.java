@@ -108,7 +108,6 @@ public class DatabaseUtil {
             }
         } catch (Exception e) {
             Timber.e("", e);
-            ;
         } finally {
             if (cursor != null) {
                 cursor.close();
