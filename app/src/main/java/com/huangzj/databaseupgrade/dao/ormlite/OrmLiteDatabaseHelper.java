@@ -51,61 +51,8 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    public boolean isValid(DatabaseHandler handler, List<DatabaseHandler> list) {
-        if (list == null || handler == null) {
-            return false;
-        }
-        String tableName = handler.getTableName();
-        for (DatabaseHandler element : list) {
-            if (tableName.equals(element.getTableName())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 升级处理
-     */
-    public void upgrade(SQLiteDatabase db, ConnectionSource cs, int oldVersion, int newVersion) {
-        Timber.i("数据库升级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
-        try {
-            for (DatabaseHandler handler : tableHandlers) {
-                handler.onUpgrade(db, cs, oldVersion, newVersion);
-            }
-        } catch (SQLException e) {
-            Timber.e("数据库升级出错", e);
-        }
-    }
-
-    /**
-     * 降级处理
-     */
-    public void downgrade(ConnectionSource cs, int oldVersion, int newVersion) {
-        Timber.i("数据库降级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
-        try {
-            for (DatabaseHandler handler : tableHandlers) {
-                handler.onDowngrade(cs, oldVersion, newVersion);
-            }
-        } catch (SQLException e) {
-            Timber.e("数据库降级出错", e);
-        }
-    }
-
-    /**
-     * 清空所有表数据
-     */
-    public void clearAllData() {
-        try {
-            for (DatabaseHandler handler : tableHandlers) {
-                handler.clear(connectionSource);
-            }
-        } catch (SQLException e) {
-            Timber.e("清除数据库数据出错", e);
-        }
-    }
-
-    public void createTables(ConnectionSource connectionSource) {
+    @Override
+    public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
         try {
             for (DatabaseHandler handler : tableHandlers) {
                 handler.create(connectionSource);
@@ -115,18 +62,19 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
-        createTables(connectionSource);
-    }
-
     /**
      * 数据库升级，注意控制好数据库版本号，不然此方法将不会被调用到
      */
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-        upgrade(sqLiteDatabase, connectionSource, oldVersion, newVersion);
+    public void onUpgrade(SQLiteDatabase db, ConnectionSource cs, int oldVersion, int newVersion) {
+        Timber.i("数据库升级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
+        try {
+            for (DatabaseHandler handler : tableHandlers) {
+                handler.onUpgrade(db, cs, oldVersion, newVersion);
+            }
+        } catch (SQLException e) {
+            Timber.e("数据库升级出错", e);
+        }
     }
 
     /**
@@ -158,7 +106,27 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     public void onDowngrade(ConnectionSource cs, int oldVersion, int newVersion) {
-        downgrade(cs, oldVersion, newVersion);
+        Timber.i("数据库降级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
+        try {
+            for (DatabaseHandler handler : tableHandlers) {
+                handler.onDowngrade(cs, oldVersion, newVersion);
+            }
+        } catch (SQLException e) {
+            Timber.e("数据库降级出错", e);
+        }
+    }
+
+    /**
+     * 清空所有表数据
+     */
+    public void clearAllData() {
+        try {
+            for (DatabaseHandler handler : tableHandlers) {
+                handler.clear(connectionSource);
+            }
+        } catch (SQLException e) {
+            Timber.e("清除数据库数据出错", e);
+        }
     }
 
     public synchronized Dao getDao(Class cls) {
@@ -190,5 +158,18 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
                 it.remove();
             }
         }
+    }
+
+    private boolean isValid(DatabaseHandler handler, List<DatabaseHandler> list) {
+        if (list == null || handler == null) {
+            return false;
+        }
+        String tableName = handler.getTableName();
+        for (DatabaseHandler element : list) {
+            if (tableName.equals(element.getTableName())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

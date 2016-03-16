@@ -137,14 +137,14 @@ public class DatabaseHandler<T> {
 
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            throw new SQLException("更新数据表失败");
+            throw new SQLException("update fail");
         } finally {
             db.endTransaction();
         }
     }
 
     /**
-     * 获取需要复制的列名
+     * 获得没有变化的列
      */
     private String getCopyColumns(List<String> oldColumns, List<String> deleteList) {
         StringBuilder columns = new StringBuilder("");
