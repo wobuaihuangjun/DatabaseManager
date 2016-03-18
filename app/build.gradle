@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.huangzj.databaseupgrade"
-        minSdkVersion 9
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -26,6 +26,11 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    testCompile 'org.powermock:powermock-module-junit4:1.6.4'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.4'
+    testCompile 'org.robolectric:robolectric:3.0'
+
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
 
@@ -39,4 +44,7 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-android:4.48'
 
     compile 'com.jakewharton:butterknife:7.0.1'
+
+    compile 'com.hannesdorfmann.mosby:mvp:2.0.1'
+    compile 'com.hannesdorfmann.mosby:viewstate:2.0.1' // optional viewstate feature
 }

@@ -1,30 +1,40 @@
-package com.huangzj.databaseupgrade.mvp.presenter;
+package com.huangzj.databaseupgrade.mosby;
 
 import android.content.Context;
 
+import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.huangzj.databaseupgrade.dao.RxDao;
 import com.huangzj.databaseupgrade.dao.bean.City;
 import com.huangzj.databaseupgrade.dao.ormlite.DbCallBack;
-import com.huangzj.databaseupgrade.mvp.base.MvpPresenter;
-import com.huangzj.databaseupgrade.mvp.view.MainView;
 import com.huangzj.databaseupgrade.util.UUIDUtil;
 
 import java.util.List;
 
-
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
- * Created by huangzj on 2016/3/15.
+ * Created by huangzj on 2016/3/17.
  */
-public class MainPresenter extends MvpPresenter<MainView> {
+public class DemoPresenter extends MvpBasePresenter<DemoView> {
 
     private RxDao cityDao;
 
-    public MainPresenter(MainView mainView, Context context) {
-        super();
-        viewDelegate = mainView;
+    public DemoPresenter(Context context) {
         cityDao = new RxDao<>(context, City.class);
+    }
+
+    public void subscribe() {
+        cityDao.subscribe();
+    }
+
+    public void unsubscribe() {
+        cityDao.unsubscribe();
     }
 
     public void insert() {
@@ -64,34 +74,49 @@ public class MainPresenter extends MvpPresenter<MainView> {
             sb.append("最后一条记录为：\n");
             sb.append(list.get(list.size() - 1).toString()).append("\n\n");
         }
-        viewDelegate.updateView(sb.toString());
+        if (isViewAttached()) {
+            getView().updateView(sb.toString());
+        }
     }
 
     public void clear() {
+//        Observable<Boolean> observable = Observable.create(new Observable.OnSubscribe<Boolean>() {
+//            @Override
+//            public void call(Subscriber<? super Boolean> subscriber) {
+//                subscriber.onNext(cityDao.clearTableData());
+//                subscriber.onCompleted();
+//            }
+//        });
+//        observable.subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<Boolean>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(Boolean aBoolean) {
+//                        if (isViewAttached()) {
+//                            getView().clearView();
+//                        }
+//                    }
+//                });
+
         cityDao.clearTableDataSync(new DbCallBack() {
             @Override
             public void onComplete(Object data) {
                 Timber.d("---------sync clear complete--" + data);
-                viewDelegate.clearView();
+                if (isViewAttached()) {
+                    getView().clearView();
+                }
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        cityDao.subscribe();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        cityDao.unsubscribe();
-    }
-
-    @Override
-    public void onDestroy() {
-        cityDao = null;
     }
 
 }

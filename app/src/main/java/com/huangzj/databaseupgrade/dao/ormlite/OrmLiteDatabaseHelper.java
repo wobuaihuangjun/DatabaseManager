@@ -19,6 +19,8 @@ import java.util.Map;
 import timber.log.Timber;
 
 /**
+ * ormlite操作数据库Helper
+ * <p/>
  * Created by huangzj on 2016/2/24.
  */
 public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
@@ -46,7 +48,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
             tableHandlers = new ArrayList<>();
         }
         DatabaseHandler handler = new DatabaseHandler<>(clazz);
-        if (isValid(handler, tableHandlers)) {
+        if (isValidTable(handler)) {
             tableHandlers.add(handler);
         }
     }
@@ -58,7 +60,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
                 handler.create(connectionSource);
             }
         } catch (SQLException e) {
-            Timber.e("数据库建表出错", e);
+            Timber.e("database create fail", e);
         }
     }
 
@@ -73,7 +75,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
                 handler.onUpgrade(db, cs, oldVersion, newVersion);
             }
         } catch (SQLException e) {
-            Timber.e("数据库升级出错", e);
+            Timber.e("database upgrade fail", e);
         }
     }
 
@@ -87,7 +89,6 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
         boolean clearSpecial = false;
         if (conn == null) {
             conn = new AndroidDatabaseConnection(db, true, this.cancelQueriesEnabled);
-
             try {
                 cs.saveSpecialConnection((DatabaseConnection) conn);
                 clearSpecial = true;
@@ -112,20 +113,20 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
                 handler.onDowngrade(cs, oldVersion, newVersion);
             }
         } catch (SQLException e) {
-            Timber.e("数据库降级出错", e);
+            Timber.e("database downgrade fail", e);
         }
     }
 
     /**
-     * 清空所有表数据
+     * 清空所有表的数据
      */
-    public void clearAllData() {
+    public void clearAllTable() {
         try {
             for (DatabaseHandler handler : tableHandlers) {
                 handler.clear(connectionSource);
             }
         } catch (SQLException e) {
-            Timber.e("清除数据库数据出错", e);
+            Timber.e("clear all table fail", e);
         }
     }
 
@@ -138,7 +139,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
             try {
                 dao = super.getDao(cls);
             } catch (SQLException e) {
-                Timber.e("数据库操作出错", e);
+                Timber.e("database operate fail", e);
                 return null;
             }
             daoMap.put(clsName, dao);
@@ -160,12 +161,18 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    private boolean isValid(DatabaseHandler handler, List<DatabaseHandler> list) {
-        if (list == null || handler == null) {
+    /**
+     * 判断新注册的数据表是否有效
+     *
+     * @param handler 数据表对应的DatabaseHandler
+     * @return
+     */
+    public boolean isValidTable(DatabaseHandler handler) {
+        if (tableHandlers == null || handler == null) {
             return false;
         }
         String tableName = handler.getTableName();
-        for (DatabaseHandler element : list) {
+        for (DatabaseHandler element : tableHandlers) {
             if (tableName.equals(element.getTableName())) {
                 return false;
             }
