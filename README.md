@@ -6,8 +6,3 @@
 ###通过异步读写，避免数据库操作对界面造成的卡顿
 ###使用LruCache缓存查询结果，避免不必要的数据库IO操作，加快数据查询效率。
 
-# License
-
- Copyright 2016 wobuaihuangjun
- 
-**该开源项目遵循GPL v3 开源协议。**
