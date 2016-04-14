@@ -8,5 +8,6 @@
 
 # License
 
-### Copyright 2016 wobuaihuangjun
-## 该开源项目遵循GPL v3 开源协议。
+ Copyright 2016 wobuaihuangjun
+ 
+**该开源项目遵循GPL v3 开源协议。**
