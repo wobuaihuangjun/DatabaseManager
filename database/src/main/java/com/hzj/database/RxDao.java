@@ -1,13 +1,12 @@
-package com.huangzj.databaseupgrade.dao;
+package com.hzj.database;
 
 import android.content.Context;
 
-import com.huangzj.databaseupgrade.dao.ormlite.DatabaseUtil;
-import com.huangzj.databaseupgrade.dao.ormlite.DbCache;
-import com.huangzj.databaseupgrade.dao.ormlite.DbCallBack;
-import com.huangzj.databaseupgrade.dao.ormlite.OrmLiteDao;
-import com.huangzj.databaseupgrade.util.RxUtil;
-import com.huangzj.databaseupgrade.util.JSONUtil;
+
+import com.hzj.database.ormlite.DatabaseUtil;
+import com.hzj.database.ormlite.DbCache;
+import com.hzj.database.ormlite.DbCallBack;
+import com.hzj.database.ormlite.OrmLiteDao;
 
 import java.util.List;
 import java.util.concurrent.Callable;

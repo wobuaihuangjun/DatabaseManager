@@ -1,10 +1,9 @@
-package com.huangzj.databaseupgrade.dao.ormlite;
+package com.hzj.database.ormlite;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
-import com.huangzj.databaseupgrade.util.CollectionUtil;
 import com.j256.ormlite.misc.JavaxPersistence;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTable;

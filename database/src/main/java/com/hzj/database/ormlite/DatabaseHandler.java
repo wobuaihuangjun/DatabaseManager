@@ -1,8 +1,8 @@
-package com.huangzj.databaseupgrade.dao.ormlite;
+package com.hzj.database.ormlite;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import com.huangzj.databaseupgrade.util.CollectionUtil;
+import com.hzj.database.CollectionUtil;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 

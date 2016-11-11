@@ -1,4 +1,4 @@
-package com.huangzj.databaseupgrade.dao.ormlite;
+package com.hzj.database.ormlite;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

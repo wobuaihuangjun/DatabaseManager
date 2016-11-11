@@ -1,4 +1,4 @@
-package com.huangzj.databaseupgrade.util;
+package com.hzj.database;
 
 import android.util.Log;
 

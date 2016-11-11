@@ -1,4 +1,4 @@
-package com.huangzj.databaseupgrade.dao.bean;
+package com.hzj.database.bean;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

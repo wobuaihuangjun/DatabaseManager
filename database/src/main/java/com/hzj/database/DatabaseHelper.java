@@ -1,9 +1,10 @@
-package com.huangzj.databaseupgrade.dao;
+package com.hzj.database;
 
 import android.content.Context;
 
-import com.huangzj.databaseupgrade.dao.bean.City;
-import com.huangzj.databaseupgrade.dao.ormlite.OrmLiteDatabaseHelper;
+import com.hzj.database.bean.City;
+import com.hzj.database.ormlite.OrmLiteDatabaseHelper;
+
 
 /**
  * ormlite操作数据库Helper

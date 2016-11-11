@@ -1,11 +1,10 @@
-package com.huangzj.databaseupgrade.dao;
+package com.hzj.database;
 
 
-import com.huangzj.databaseupgrade.dao.bean.City;
-import com.huangzj.databaseupgrade.dao.ormlite.ColumnStruct;
-import com.huangzj.databaseupgrade.dao.ormlite.DatabaseHandler;
-import com.huangzj.databaseupgrade.dao.ormlite.DatabaseUtil;
-import com.huangzj.databaseupgrade.util.CollectionUtil;
+import com.hzj.database.bean.City;
+import com.hzj.database.ormlite.ColumnStruct;
+import com.hzj.database.ormlite.DatabaseHandler;
+import com.hzj.database.ormlite.DatabaseUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +89,6 @@ public class Test {
                 System.out.println("列发生了变化");
                 // 判断列的变化情况：增加、减少、增减
                 List<String> deleteList = DatabaseUtil.getDeleteColumns(oldColumns, newColumns);
-                List<String> addList = DatabaseUtil.getAddColumns(oldColumns, newColumns);
                 if (deleteList == null || deleteList.isEmpty()) {
 //                    upgradeByAdd(db, addList, newStruct);
                 } else {
@@ -154,14 +152,14 @@ public class Test {
                 } else {
                     System.out.println("列发生了变化");
                     List<String> deleteList = DatabaseUtil.getDeleteColumns(oldColumns, newColumns);
-                    List<String> addList = DatabaseUtil.getAddColumns(oldColumns, newColumns);
-                    if (addList != null && !addList.isEmpty()) {
-                        StringBuilder builder = new StringBuilder();
-                        for (String srt : addList) {
-                            builder.append(srt).append(",");
-                        }
-                        System.out.println("增加了列：" + builder.toString());
-                    }
+//                    List<String> addList = DatabaseUtil.getAddColumns(oldColumns, newColumns);
+//                    if (addList != null && !addList.isEmpty()) {
+//                        StringBuilder builder = new StringBuilder();
+//                        for (String srt : addList) {
+//                            builder.append(srt).append(",");
+//                        }
+//                        System.out.println("增加了列：" + builder.toString());
+//                    }
                     if (deleteList != null && !deleteList.isEmpty()) {
                         StringBuilder builder = new StringBuilder();
                         for (String srt : deleteList) {

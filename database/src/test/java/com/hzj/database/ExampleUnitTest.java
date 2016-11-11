@@ -1,4 +1,4 @@
-package com.huangzj.databaseupgrade;
+package com.hzj.database;
 
 import org.junit.Test;
 

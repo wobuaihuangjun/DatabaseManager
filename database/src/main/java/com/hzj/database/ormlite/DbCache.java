@@ -1,9 +1,9 @@
-package com.huangzj.databaseupgrade.dao.ormlite;
+package com.hzj.database.ormlite;
 
-import android.support.v4.util.LruCache;
 import android.text.TextUtils;
+import android.util.LruCache;
 
-import com.huangzj.databaseupgrade.util.JSONUtil;
+import com.hzj.database.JSONUtil;
 
 import java.util.HashMap;
 import java.util.Map;

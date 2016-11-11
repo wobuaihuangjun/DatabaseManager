@@ -1,4 +1,4 @@
-package com.huangzj.databaseupgrade.dao.ormlite;
+package com.hzj.database.ormlite;
 
 /**
  * Created by lhd on 2015/11/7.
