@@ -1,0 +1,15 @@
+ext {
+    //编译SDK版本
+    compileSdkVer=23
+    //构建工具版本
+    buildToolsVer='23.0.3'
+    //最低兼容版本
+    minSdkVer=14
+    //测试过的版本
+    targetSdkVer=23
+    //支持库的版本
+    supportVer='23.3.0'
+    //JDK版本
+    sourceCompatVer=JavaVersion.VERSION_1_7
+    targetCompatVer=JavaVersion.VERSION_1_7
+}

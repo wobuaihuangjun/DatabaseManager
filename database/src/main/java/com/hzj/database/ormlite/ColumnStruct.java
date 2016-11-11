@@ -1,9 +1,9 @@
 package com.hzj.database.ormlite;
 
 /**
- * Created by huangzj on 2016/1/25.
- * <p/>
  * 数据库表中列的结构
+ * <p/>
+ * Created by huangzj on 2016/1/25.
  */
 public class ColumnStruct {
 

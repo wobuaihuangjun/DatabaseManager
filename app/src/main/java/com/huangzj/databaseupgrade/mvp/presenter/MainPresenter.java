@@ -2,12 +2,12 @@ package com.huangzj.databaseupgrade.mvp.presenter;
 
 import android.content.Context;
 
-import com.huangzj.databaseupgrade.dao.RxDao;
-import com.huangzj.databaseupgrade.dao.bean.City;
-import com.huangzj.databaseupgrade.dao.ormlite.DbCallBack;
+import com.huangzj.databaseupgrade.bean.City;
 import com.huangzj.databaseupgrade.mvp.base.MvpPresenter;
 import com.huangzj.databaseupgrade.mvp.view.MainView;
 import com.huangzj.databaseupgrade.util.UUIDUtil;
+import com.hzj.database.ormlite.DbCallBack;
+import com.hzj.database.ormlite.RxDao;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class MainPresenter extends MvpPresenter<MainView> {
         city.setCityName("东莞市");
         city.setCityNo(cityUuid);
 
-        cityDao.insertSync(city, new DbCallBack() {
+        cityDao.insert(city, new DbCallBack() {
             @Override
             public void onComplete(Object data) {
                 Timber.d("---------sync insert complete--" + data);
@@ -44,7 +44,7 @@ public class MainPresenter extends MvpPresenter<MainView> {
     }
 
     public void query() {
-        cityDao.queryForAllSync(new DbCallBack() {
+        cityDao.queryForAll(new DbCallBack() {
             @Override
             public void onComplete(Object data) {
                 Timber.d("---------sync query success");
@@ -68,7 +68,7 @@ public class MainPresenter extends MvpPresenter<MainView> {
     }
 
     public void clear() {
-        cityDao.clearTableDataSync(new DbCallBack() {
+        cityDao.clearTableData(new DbCallBack() {
             @Override
             public void onComplete(Object data) {
                 Timber.d("---------sync clear complete--" + data);

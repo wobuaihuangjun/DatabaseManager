@@ -18,6 +18,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+
 /**
  * ormlite操作数据库Helper
  * <p/>
@@ -72,7 +73,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
         Timber.i("数据库升级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
         try {
             for (DatabaseHandler handler : tableHandlers) {
-                handler.onUpgrade(db, cs, oldVersion, newVersion);
+                handler.onUpgrade(db, cs);
             }
         } catch (SQLException e) {
             Timber.e("database upgrade fail", e);
@@ -130,6 +131,12 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
+    /**
+     * 获取dao
+     *
+     * @param cls 表结构bean
+     * @return
+     */
     public synchronized Dao getDao(Class cls) {
         Dao dao;
         String clsName = cls.getSimpleName();
@@ -147,6 +154,9 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
         return dao;
     }
 
+    /**
+     * 释放dao
+     */
     @Override
     public void close() {
         super.close();
@@ -165,7 +175,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
      * 判断新注册的数据表是否有效
      *
      * @param handler 数据表对应的DatabaseHandler
-     * @return
+     * @return true：有效；false；无效
      */
     public boolean isValidTable(DatabaseHandler handler) {
         if (tableHandlers == null || handler == null) {

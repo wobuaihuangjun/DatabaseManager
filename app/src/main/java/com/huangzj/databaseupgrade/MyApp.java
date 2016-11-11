@@ -19,5 +19,6 @@ public class MyApp extends Application {
         instance = (MyApp) getApplicationContext();
 
         Timber.plant(new Timber.DebugTree());
+        DatabaseManager.getInstance().init(instance);
     }
 }

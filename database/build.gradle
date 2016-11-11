@@ -1,12 +1,13 @@
 apply plugin: 'com.android.library'
+apply from: '../config.gradle'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion compileSdkVer
+    buildToolsVersion buildToolsVer
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion minSdkVer
+        targetSdkVersion targetSdkVer
         versionCode 1
         versionName "1.0"
     }
@@ -29,6 +30,4 @@ dependencies {
 
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'io.reactivex:rxjava:1.1.1'
-
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.0'
 }

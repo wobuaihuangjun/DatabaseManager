@@ -22,6 +22,8 @@ import timber.log.Timber;
  */
 public class DatabaseUtil {
 
+    private static final String TAG = "DatabaseUtil";
+
     /**
      * 获取表名
      *
@@ -73,10 +75,9 @@ public class DatabaseUtil {
         List<ColumnStruct> columnStruct = new ArrayList<>();
         try {
             String struct = TableUtils.getCreateTableStatements(connectionSource, clazz).get(0);
-            Timber.i("新的建表语句：" + struct);
             columnStruct = getColumnStruct(struct);
         } catch (SQLException e) {
-            Timber.e("",e);
+            Timber.e(TAG, e);
         }
         return columnStruct;
     }
@@ -99,16 +100,15 @@ public class DatabaseUtil {
                 int columnIndex = cursor.getColumnIndex("sql");
                 if (-1 != columnIndex && cursor.getCount() > 0) {
                     String struct = cursor.getString(columnIndex);
-                    Timber.i("旧的建表语句：" + struct);
                     columnStruct = getColumnStruct(struct);
                 } else {
-                    Timber.i("不存在旧表");
+                    Timber.i(TAG, "不存在旧表");
                 }
             } else {
-                Timber.i("数据库操作失败");
+                Timber.i(TAG, "数据库操作失败");
             }
         } catch (Exception e) {
-            Timber.e("", e);
+            Timber.e(TAG, e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -164,11 +164,11 @@ public class DatabaseUtil {
      */
     private static void modifyColumnStruct(List<ColumnStruct> list, String columnName, String limit) {
         if (list == null || list.isEmpty()) {
-            Timber.e("list is null.");
+            Timber.e(TAG, "list is null.");
             return;
         }
         if (TextUtils.isEmpty(columnName) || TextUtils.isEmpty(limit)) {
-            Timber.e("columnName is null or limit is null.");
+            Timber.e(TAG, "columnName is null or limit is null.");
             return;
         }
 
@@ -176,6 +176,7 @@ public class DatabaseUtil {
         for (int i = 0; i < size; i++) {
             ColumnStruct struct = list.get(i);
             if (columnName.equals(struct.getColumnName())) {
+                // 列结构集合中已存在对应列，修改对应列结构
                 StringBuilder sb = new StringBuilder(struct.getColumnLimit());
                 sb.append(" ");
                 sb.append(limit);
@@ -183,7 +184,7 @@ public class DatabaseUtil {
                 return;
             }
         }
-
+        // 列结构集合中不存在对应列，添加进列结构
         list.add(new ColumnStruct(columnName, limit));
     }
 
@@ -322,4 +323,3 @@ public class DatabaseUtil {
     }
 
 }
-

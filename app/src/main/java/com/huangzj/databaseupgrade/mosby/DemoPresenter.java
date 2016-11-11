@@ -3,19 +3,13 @@ package com.huangzj.databaseupgrade.mosby;
 import android.content.Context;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
-import com.huangzj.databaseupgrade.dao.RxDao;
-import com.huangzj.databaseupgrade.dao.bean.City;
-import com.huangzj.databaseupgrade.dao.ormlite.DbCallBack;
+import com.huangzj.databaseupgrade.bean.City;
 import com.huangzj.databaseupgrade.util.UUIDUtil;
+import com.hzj.database.ormlite.DbCallBack;
+import com.hzj.database.ormlite.RxDao;
 
 import java.util.List;
 
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
@@ -44,7 +38,7 @@ public class DemoPresenter extends MvpBasePresenter<DemoView> {
         city.setCityName("东莞市");
         city.setCityNo(cityUuid);
 
-        cityDao.insertSync(city, new DbCallBack() {
+        cityDao.insert(city, new DbCallBack() {
             @Override
             public void onComplete(Object data) {
                 Timber.d("---------sync insert complete--" + data);
@@ -54,7 +48,7 @@ public class DemoPresenter extends MvpBasePresenter<DemoView> {
     }
 
     public void query() {
-        cityDao.queryForAllSync(new DbCallBack() {
+        cityDao.queryForAll(new DbCallBack() {
             @Override
             public void onComplete(Object data) {
                 Timber.d("---------sync query success");
@@ -107,8 +101,7 @@ public class DemoPresenter extends MvpBasePresenter<DemoView> {
 //                        }
 //                    }
 //                });
-
-        cityDao.clearTableDataSync(new DbCallBack() {
+        cityDao.clearTableData(new DbCallBack() {
             @Override
             public void onComplete(Object data) {
                 Timber.d("---------sync clear complete--" + data);
