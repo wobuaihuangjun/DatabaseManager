@@ -53,6 +53,11 @@ public class DemoActivity extends MvpActivity<DemoView, DemoPresenter> implement
         presenter.clear();
     }
 
+    @OnClick(R.id.update)
+    void update() {
+        presenter.update();
+    }
+
     @NonNull
     @Override
     public DemoPresenter createPresenter() {

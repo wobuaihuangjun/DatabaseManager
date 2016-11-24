@@ -33,6 +33,13 @@
             android:text="insert" />
 
         <Button
+            android:id="@+id/update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="update" />
+
+        <Button
             android:id="@+id/query"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

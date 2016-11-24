@@ -48,7 +48,7 @@ public class DbCache {
             @Override
             protected int sizeOf(String key, Map<String, String> value) {
                 // 暂时用记录的条数来缓存
-                return value.size();
+                return value == null ? 0 : value.size();
             }
         };
     }

@@ -47,6 +47,14 @@ public class DemoPresenter extends MvpBasePresenter<DemoView> {
         });
     }
 
+    public void update() {
+        City city = (City) cityDao.queryForFirst("cityName", "东莞市");
+
+        city.setProvinceName("湖南省");
+
+        cityDao.update(city);
+    }
+
     public void query() {
         cityDao.queryForAll(new DbCallBack() {
             @Override
