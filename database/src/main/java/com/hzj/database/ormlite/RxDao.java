@@ -1,6 +1,7 @@
 package com.hzj.database.ormlite;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.hzj.database.RxUtil;
 
@@ -15,7 +16,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 /**
  * Created by huangzj on 2016/2/29.
@@ -634,7 +634,7 @@ public class RxDao<T> extends OrmLiteDao<T> {
                         try {
                             subscriber.onNext(func.call());
                         } catch (Exception ex) {
-                            Timber.e(TAG, "Error reading from the database" + ex);
+                            Log.e(TAG, "Error reading from the database" + ex);
                         }
                     }
                 });

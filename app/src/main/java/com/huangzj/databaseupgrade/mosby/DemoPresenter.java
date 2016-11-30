@@ -53,6 +53,9 @@ public class DemoPresenter extends MvpBasePresenter<DemoView> {
         city.setProvinceName("湖南省");
 
         cityDao.update(city);
+
+        city.setCityName("深圳市");
+        cityDao.updateBy(city, "cityName", "东莞市");
     }
 
     public void query() {

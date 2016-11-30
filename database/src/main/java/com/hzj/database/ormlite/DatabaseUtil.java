@@ -3,6 +3,7 @@ package com.hzj.database.ormlite;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.j256.ormlite.misc.JavaxPersistence;
 import com.j256.ormlite.support.ConnectionSource;
@@ -12,8 +13,6 @@ import com.j256.ormlite.table.TableUtils;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import timber.log.Timber;
 
 /**
  * 数据库处理的辅助工具
@@ -77,7 +76,7 @@ public class DatabaseUtil {
             String struct = TableUtils.getCreateTableStatements(connectionSource, clazz).get(0);
             columnStruct = getColumnStruct(struct);
         } catch (SQLException e) {
-            Timber.e(TAG, e);
+            Log.e(TAG, "create new table statements fail", e);
         }
         return columnStruct;
     }
@@ -102,13 +101,13 @@ public class DatabaseUtil {
                     String struct = cursor.getString(columnIndex);
                     columnStruct = getColumnStruct(struct);
                 } else {
-                    Timber.i(TAG, "不存在旧表");
+                    Log.i(TAG, "不存在旧表");
                 }
             } else {
-                Timber.i(TAG, "数据库操作失败");
+                Log.i(TAG, "数据库操作失败");
             }
         } catch (Exception e) {
-            Timber.e(TAG, e);
+            Log.e(TAG, "create old table statements fail", e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -164,11 +163,11 @@ public class DatabaseUtil {
      */
     private static void modifyColumnStruct(List<ColumnStruct> list, String columnName, String limit) {
         if (list == null || list.isEmpty()) {
-            Timber.e(TAG, "list is null.");
+            Log.e(TAG, "list is null.");
             return;
         }
         if (TextUtils.isEmpty(columnName) || TextUtils.isEmpty(limit)) {
-            Timber.e(TAG, "columnName is null or limit is null.");
+            Log.e(TAG, "columnName is null or limit is null.");
             return;
         }
 

@@ -3,13 +3,15 @@ package com.huangzj.databaseupgrade.bean;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
+
 /**
  * 市信息数据表
  * <p/>
  * Created by huangzj on 2016/1/23.
  */
 @DatabaseTable(tableName = "city")
-public class City {
+public class City implements Serializable {
 
     @DatabaseField(generatedId = true)
     private Integer id;
@@ -23,7 +25,6 @@ public class City {
     @DatabaseField(defaultValue = "-1")
     private Integer index;
 
-    @DatabaseField
     private String test;
 
     @DatabaseField

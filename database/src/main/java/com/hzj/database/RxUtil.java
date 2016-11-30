@@ -1,5 +1,7 @@
 package com.hzj.database;
 
+import android.util.Log;
+
 import java.util.concurrent.Callable;
 
 import rx.Observable;
@@ -9,20 +11,21 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 public class RxUtil {
+
+    private static final String TAG = "RxUtil";
 
     public static void unsubscribeIfNotNull(Subscription subscription) {
         if (subscription != null) {
             subscription.unsubscribe();
-            Timber.i("-------unsubscribe");
+            Log.i(TAG, "-------unsubscribe");
         }
     }
 
     public static CompositeSubscription getNewCompositeSubIfUnsubscribed(CompositeSubscription subscription) {
         if (subscription == null || subscription.isUnsubscribed()) {
-            Timber.i("-------init rxjava");
+            Log.i(TAG, "-------init rxjava");
             return new CompositeSubscription();
         }
         return subscription;
@@ -55,13 +58,13 @@ public class RxUtil {
                         try {
                             subscriber.onNext(func.call());
                         } catch (Exception ex) {
-                            Timber.e("Error reading from the database", ex);
+                            Log.e(TAG, "Error reading from the database", ex);
                         }
                     }
                 });
     }
 
-    public void test(){
+    public void test() {
 
     }
 }

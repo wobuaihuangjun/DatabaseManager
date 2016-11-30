@@ -1,12 +1,11 @@
 package com.hzj.database.ormlite;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.LruCache;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import timber.log.Timber;
 
 /**
  * Created by hzj on 2016/3/2.
@@ -66,7 +65,7 @@ public class DbCache {
             initCache();
         }
         if (inValid(tableName) || inValid(query) || value == null) {
-            Timber.i(TAG, "value is null");
+            Log.i(TAG, "value is null");
             return;
         }
         Map<String, String> tableCache = mLruCache.remove(tableName);
@@ -90,13 +89,13 @@ public class DbCache {
      */
     public String getCache(String tableName, String query) {
         if (inValid(tableName) || inValid(query)) {
-            Timber.i(TAG, "mLruCache is empty");
+            Log.i(TAG, "mLruCache is empty");
             return null;
         }
 
         Map<String, String> tableCache = mLruCache.get(tableName);
         if (tableCache == null || tableCache.isEmpty()) {
-            Timber.i(TAG, "tableCache is empty");
+            Log.i(TAG, "tableCache is empty");
             return null;
         }
         return tableCache.get(query);

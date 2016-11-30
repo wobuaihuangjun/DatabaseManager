@@ -2,6 +2,7 @@ package com.hzj.database.ormlite;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.j256.ormlite.android.AndroidDatabaseConnection;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -16,8 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import timber.log.Timber;
-
 
 /**
  * ormlite操作数据库Helper
@@ -26,12 +25,14 @@ import timber.log.Timber;
  */
 public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-    List<DatabaseHandler> tableHandlers;
+    private static final String TAG = "OrmLiteDatabaseHelper";
+
+    private List<DatabaseHandler> tableHandlers;
 
     /**
      * dao缓存
      */
-    Map<String, Dao> daoMap;
+    private Map<String, Dao> daoMap;
 
     public OrmLiteDatabaseHelper(Context context, String databaseName, SQLiteDatabase.CursorFactory factory, int databaseVersion) {
         super(context, databaseName, factory, databaseVersion);
@@ -61,7 +62,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
                 handler.create(connectionSource);
             }
         } catch (SQLException e) {
-            Timber.e("database create fail", e);
+            Log.e(TAG, "database create fail", e);
         }
     }
 
@@ -70,13 +71,13 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, ConnectionSource cs, int oldVersion, int newVersion) {
-        Timber.i("数据库升级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
+        Log.i(TAG, "数据库升级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
         try {
             for (DatabaseHandler handler : tableHandlers) {
                 handler.onUpgrade(db, cs);
             }
         } catch (SQLException e) {
-            Timber.e("database upgrade fail", e);
+            Log.e(TAG, "database upgrade fail", e);
         }
     }
 
@@ -108,13 +109,13 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     public void onDowngrade(ConnectionSource cs, int oldVersion, int newVersion) {
-        Timber.i("数据库降级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
+        Log.i(TAG, "数据库降级了" + " oldVersion = " + oldVersion + " newVersion = " + newVersion);
         try {
             for (DatabaseHandler handler : tableHandlers) {
                 handler.onDowngrade(cs, oldVersion, newVersion);
             }
         } catch (SQLException e) {
-            Timber.e("database downgrade fail", e);
+            Log.e(TAG, "database downgrade fail", e);
         }
     }
 
@@ -127,7 +128,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
                 handler.clear(connectionSource);
             }
         } catch (SQLException e) {
-            Timber.e("clear all table fail", e);
+            Log.e(TAG, "clear all table fail", e);
         }
     }
 
@@ -146,7 +147,7 @@ public class OrmLiteDatabaseHelper extends OrmLiteSqliteOpenHelper {
             try {
                 dao = super.getDao(cls);
             } catch (SQLException e) {
-                Timber.e("database operate fail", e);
+                Log.e(TAG, "database operate fail", e);
                 return null;
             }
             daoMap.put(clsName, dao);
